@@ -1,0 +1,13 @@
+Variant: profileUnitTest
+Config: debug
+Store: /home/amin/.android/debug.keystore
+Alias: AndroidDebugKey
+MD5: 00:0A:03:45:D9:D3:D2:3D:24:11:84:19:7A:0B:B0:4E
+SHA1: 99:4E:DD:E7:59:FE:B1:2F:54:75:78:7A:E4:0E:2C:C0:04:63:89:B8
+SHA-256: 8F:FA:94:6B:6E:18:CA:7A:29:09:96:37:1F:25:4D:F9:8C:EF:16:8C:72:C1:7D:FA:15:6E:81:A3:D6:58:BF:82
+Valid until: Sunday, January 14, 2052
+
+
+
+https://blog.codemagic.io/firebase-authentication-google-sign-in-using-flutter/
+https://github.com/sbis04/flutterfire-samples/blob/google-sign-in/lib/utils/authentication.dart

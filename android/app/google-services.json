@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "22518661687",
+    "project_id": "ibis-7c44e",
+    "storage_bucket": "ibis-7c44e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22518661687:android:28b96768dd9fa24a33f5b2",
+        "android_client_info": {
+          "package_name": "com.example.ibis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "22518661687-ctk05othvbbfgcfid5m52k304ha1491p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ibis",
+            "certificate_hash": "994edde759feb12f5475787ae40e2cc0046389b8"
+          }
+        },
+        {
+          "client_id": "22518661687-t8he369nulud14i9tj5e6pkodd66ti56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6INc6RLh8A7b7xVjRkBM5zqJijdnegC4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22518661687-t8he369nulud14i9tj5e6pkodd66ti56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
