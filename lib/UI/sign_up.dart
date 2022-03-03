@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ibis/UI/login_ui.dart';
+import 'package:ibis/utils/authentication.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -9,7 +10,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  TextEditingController usernameController=TextEditingController();
+  TextEditingController nameController=TextEditingController();
   TextEditingController emailController=TextEditingController();
   TextEditingController passwordController=TextEditingController();
   bool _isPasswordVisible=false;
@@ -29,16 +30,17 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget _usernameField(){
+  Widget _nameField(){
     return Material(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(30,50,30,0),
+        padding: const EdgeInsets.fromLTRB(30,20,30,0),
 
         child: Column(
           children: [
             TextFormField(
               autofocus: false,
-              controller: usernameController,
+              controller: nameController,
+              keyboardType: TextInputType.name,
               validator: (String? value ){
                 if(value!=null && value.isEmpty){
                   return 'this field is required';
@@ -48,12 +50,12 @@ class _SignUpState extends State<SignUp> {
                 }
               },
               onSaved: (value){
-                usernameController.text = value!;
+                nameController.text = value!;
               },
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Username',
+                labelText: 'username',
               ),
             ),
           ],
@@ -76,6 +78,9 @@ class _SignUpState extends State<SignUp> {
               validator: (String? value ){
                 if(value!=null && value.isEmpty){
                   return 'this field is required';
+                }
+                else if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value!)){
+                  return 'enter a valid email address';
                 }
                 else{
                   return null;
@@ -103,8 +108,7 @@ class _SignUpState extends State<SignUp> {
 
         child: Column(
           children: [
-            Text("at least 8 characters (combinations of letters,digits and special character)."
-            ),
+            Text("at least 8 characters(combinations of letters,digits and special character)."),
             TextFormField(
               autofocus: false,
               controller: passwordController,
@@ -112,6 +116,9 @@ class _SignUpState extends State<SignUp> {
               validator: (String? value ){
                 if(value!=null && value.isEmpty){
                   return 'this field is required';
+                }
+                else if(!RegExp(r'^.{8,}$').hasMatch(value!)){
+                  return 'enter a valid password, minimum 8 characters';
                 }
                 else{
                   return null;
@@ -153,9 +160,7 @@ class _SignUpState extends State<SignUp> {
       child: MaterialButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Processing Data')),
-            );
+
           }
         },
         child: Container(
@@ -262,7 +267,7 @@ class _SignUpState extends State<SignUp> {
               key: _formKey,
               child: Wrap(
                 children: <Widget>[
-                  _usernameField(),
+                  _nameField(),
                   _emailField(),
                   _passwordField(),
                   _signUpButton(),

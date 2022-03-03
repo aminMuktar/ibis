@@ -229,7 +229,6 @@ class _LoginUIState extends State<LoginUI> {
         children:<Widget>[
           Container(
             alignment: Alignment.topLeft,
-
             child: Column(
               children:<Widget>[
                 _backButton()

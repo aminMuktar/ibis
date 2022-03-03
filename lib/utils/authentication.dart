@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ibis/UI/discover_ui.dart';
 
@@ -29,22 +30,20 @@ class Authentication{
     }
     return firebaseApp;
   }
-   static Future signUpWithEmailandPassword(String email, String password) async{
-     try{
-       UserCredential userCredential=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
-     }
-     on FirebaseAuthException catch(e){
-       if(e.code=='weak-password'){
-         return 'The password provided was too weak';
-       }
-       else if(e.code == 'email-already-in-use'){
-         return 'The account already exists for that email';
-       }
-     }
-     catch(e){
-       return e;
-     }
+  Future<void> signInWithUsernameEmailAndPassword(context,String email,String password) async{
+      final auth=FirebaseAuth.instance;
+    try{
+      await auth.signInWithEmailAndPassword(email: email, password: password).then((uid) => {
+        Navigator.push(context,MaterialPageRoute(builder: (context) => DiscoverUI()))
+      });
+    }
+    catch(e){
+      Fluttertoast.showToast(
+        msg: e.toString(),
+      );
+    }
   }
+
   //method for google signin
   static Future<User?> signInWithGoogle({required BuildContext context}) async{
     FirebaseAuth auth=FirebaseAuth.instance;
