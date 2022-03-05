@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ibis/UI/login_ui.dart';
+import 'package:ibis/screens/login_ui.dart';
 import 'package:ibis/utils/authentication.dart';
 
 class SignUp extends StatefulWidget {
@@ -14,6 +14,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController emailController=TextEditingController();
   TextEditingController passwordController=TextEditingController();
   bool _isPasswordVisible=false;
+  bool isLoading=false;
   final _formKey=GlobalKey<FormState>();
   Widget _labelPlace(){
     return Column(
@@ -30,39 +31,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget _nameField(){
-    return Material(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(30,20,30,0),
-
-        child: Column(
-          children: [
-            TextFormField(
-              autofocus: false,
-              controller: nameController,
-              keyboardType: TextInputType.name,
-              validator: (String? value ){
-                if(value!=null && value.isEmpty){
-                  return 'this field is required';
-                }
-                else{
-                  return null;
-                }
-              },
-              onSaved: (value){
-                nameController.text = value!;
-              },
-              textInputAction: TextInputAction.next,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'username',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget _emailField(){
     return Material(
@@ -155,34 +123,53 @@ class _SignUpState extends State<SignUp> {
   }
 
   Widget _signUpButton(){
-    return Container(
-      padding: EdgeInsets.fromLTRB(17,30,17,20),
-      child: MaterialButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
+    return FutureBuilder(
+      future: Authentication.initializeFirebase(context: context),
+      builder: (context,snapshot) {
 
-          }
-        },
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(vertical: 13),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Color(0xffdf8e33).withAlpha(100),
-                    offset: Offset(2, 4),
-                    blurRadius: 8,
-                    spreadRadius: 2)
-              ],
-              color: Color(0xff780858)),
-          child: Text(
-            'Sign Up',
-            style: TextStyle(fontSize: 20, color: Colors.white),
+        return Container(
+          padding: EdgeInsets.fromLTRB(17,30,17,20),
+          child: MaterialButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                setState(() {
+                  isLoading=true;
+                });
+                  Authentication().signUp(context, emailController.text, passwordController.text);
+              }
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(vertical: 13),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Color(0xffdf8e33).withAlpha(100),
+                        offset: Offset(2, 4),
+                        blurRadius: 8,
+                        spreadRadius: 2)
+                  ],
+                  color: Color(0xff780858)),
+              child: isLoading
+              ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Wait...',style: TextStyle(fontSize: 20, color: Colors.white),),
+                  CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ],
+              )
+              : Text(
+                'Sign Up',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
   Widget _backButton(){
@@ -267,7 +254,6 @@ class _SignUpState extends State<SignUp> {
               key: _formKey,
               child: Wrap(
                 children: <Widget>[
-                  _nameField(),
                   _emailField(),
                   _passwordField(),
                   _signUpButton(),

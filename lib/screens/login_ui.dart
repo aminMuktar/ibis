@@ -15,6 +15,7 @@ class LoginUI extends StatefulWidget {
 
 class _LoginUIState extends State<LoginUI> {
   bool _isSigningIn=false;
+  bool isLoading=false;
   TextEditingController emailController=TextEditingController();
   TextEditingController passwordController=TextEditingController();
   final _formKey=GlobalKey<FormState>();
@@ -48,6 +49,9 @@ class _LoginUIState extends State<LoginUI> {
               validator: (String? value ){
                 if(value!=null && value.isEmpty){
                   return 'this field is required';
+                }
+                else if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value!)){
+                  return 'enter a valid email address';
                 }
                 else{
                   return null;
@@ -116,36 +120,69 @@ class _LoginUIState extends State<LoginUI> {
     );
   }
   Widget _signInButton(){
-    return Container(
-      padding: EdgeInsets.fromLTRB(17,30,17,20),
-      child: MaterialButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DiscoverUI()));
-          }
-
-        },
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.symmetric(vertical: 13),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Color(0xffdf8e33).withAlpha(100),
-                    offset: Offset(2, 4),
-                    blurRadius: 8,
-                    spreadRadius: 2)
-              ],
-              color: Color(0xff780858)),
-          child: Text(
-            'Login',
-            style: TextStyle(fontSize: 20, color: Colors.white),
+    return FutureBuilder(
+      future: Authentication.initializeFirebase(context: context),
+      builder: (context,snapshot) {
+        if (snapshot.hasError) {
+          return Text('error initializing');
+        }
+        else if (snapshot.connectionState == ConnectionState.done) {
+          return Container(
+            padding: EdgeInsets.fromLTRB(17, 30, 17, 20),
+            child: MaterialButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  //Navigator.push(context, MaterialPageRoute(builder: (context) => DiscoverUI()));
+                  setState(() {
+                    isLoading=true;
+                  });
+                  Authentication().login(
+                      context, emailController.text, passwordController.text);
+                }
+              },
+              child: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                padding: EdgeInsets.symmetric(vertical: 13),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Color(0xffdf8e33).withAlpha(100),
+                          offset: Offset(2, 4),
+                          blurRadius: 8,
+                          spreadRadius: 2)
+                    ],
+                    color: Color(0xff780858)),
+                child:isLoading
+                    ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Wait...',style: TextStyle(fontSize: 20, color: Colors.white),),
+                        CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+                      ],
+                    )
+                    : Text(
+                  'Login',
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+            ),
+          );
+        }
+        return CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(
+              Colors.white
           ),
-        ),
-      ),
+        );
+      }
     );
+
   }
 
   Widget _forgotPassword(){
@@ -298,7 +335,7 @@ class _LoginUIState extends State<LoginUI> {
                             setState(() {
                               _isSigningIn=true;
                             });
-                            User? user=await Authentication.signInWithGoogle(context: context);
+                            User? user=await Authentication().signInWithGoogle(context: context);
                             setState(() {
                               _isSigningIn=false;
                             });

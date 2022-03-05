@@ -3,11 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ibis/UI/discover_ui.dart';
+import 'package:ibis/screens/discover_ui.dart';
+
 
 class Authentication{
+  final _auth=FirebaseAuth.instance;
   //initialize firebase
   static SnackBar customSnackBar({required String content}) {
     return SnackBar(
@@ -30,23 +31,62 @@ class Authentication{
     }
     return firebaseApp;
   }
-  Future<void> signInWithUsernameEmailAndPassword(context,String email,String password) async{
-      final auth=FirebaseAuth.instance;
-    try{
-      await auth.signInWithEmailAndPassword(email: email, password: password).then((uid) => {
-        Navigator.push(context,MaterialPageRoute(builder: (context) => DiscoverUI()))
-      });
+  // method for signing in user email and password
+  Future<User?> login(BuildContext context,String email,String password) async{
+
+    User? user;
+    try {
+      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      user=userCredential.user;
+      if (user!=null){
+       Navigator.of(context).pushReplacement(
+         MaterialPageRoute(
+             builder:(context)=> DiscoverUI(),
+         )
+       );
+      }
     }
-    catch(e){
-      Fluttertoast.showToast(
-        msg: e.toString(),
+    on FirebaseAuthException catch(e){
+      if(e.code=='user-not-found'){
+        ScaffoldMessenger.of(context).showSnackBar(
+          Authentication.customSnackBar(
+            content:'user not found',
+          )
+        );
+
+      }
+      else if(e.code=='wrong-password'){
+        ScaffoldMessenger.of(context).showSnackBar(
+            Authentication.customSnackBar(
+              content:'the email or password was not correct',
+            )
+        );
+      }
+    }
+    return user;
+  }
+Future<void> signUp(BuildContext context,String email,String password) async{
+
+  try {
+    final user = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
+
+    if(user != null){
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder:(context)=> DiscoverUI(),
+          )
       );
     }
   }
+  catch(e){
 
+  }
+}
   //method for google signin
-  static Future<User?> signInWithGoogle({required BuildContext context}) async{
-    FirebaseAuth auth=FirebaseAuth.instance;
+  Future<User?> signInWithGoogle({required BuildContext context}) async{
+    // FirebaseAuth auth=FirebaseAuth.instance;
     User? user;
     final GoogleSignIn googleSignIn=GoogleSignIn();
     final GoogleSignInAccount? googleSignInAccount=await googleSignIn.signIn();
@@ -57,7 +97,7 @@ class Authentication{
         idToken: googleSignInAuthentication.idToken,
       );
       try{
-        final UserCredential userCredential=await auth.signInWithCredential(credential);
+        final UserCredential userCredential=await _auth.signInWithCredential(credential);
         user=userCredential.user;
 
       }
@@ -100,5 +140,9 @@ class Authentication{
         Authentication.customSnackBar(content: 'error signing out.try again')
       );
     }
+  }
+  Future<User?> getUser() async{
+    User? currentUser=await FirebaseAuth.instance.currentUser;
+      return currentUser;
   }
 }
