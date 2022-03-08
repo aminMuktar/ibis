@@ -9,10 +9,7 @@ class DiscoverUI extends StatefulWidget {
 class _DiscoverUIState extends State<DiscoverUI> {
   int activePage=1;
   List <String> images=[
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTIZccfNPnqalhrWev-Xo7uBhkor57_rKbkw&usqp=CAU',
-    'https://wallpaperaccess.com/full/2637581.jpg',
-    "https://uhdwallpapers.org/uploads/converted/20/01/14/the-mandalorian-5k-1920x1080_477555-mm-90.jpg"
-  ];
+   ];
   bool _folded=true;
   @override
 
@@ -89,67 +86,52 @@ Widget _searchField(){
             ),
           ],
         ),
-
       ),
     ),
   );
 }
 // images adon ... new book slider
 
-
-Widget _horizontalSlider(){
-    return Column(
-      children: [
-        Container(
-          child: Text("Lorem Epsum"),
-        ),
-        Expanded(
-          child: ListView(
-            // This next line does the trick.
-            scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 160.0,
-                  color: Colors.red,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 160.0,
-                  color: Colors.blue,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 160.0,
-                  color: Colors.green,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 160.0,
-                  color: Colors.yellow,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  width: 160.0,
-                  color: Colors.orange,
-                ),
-              ),
-            ],
+Widget buildCard(){
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Shimmer.fromColors(
+        highlightColor: Colors.white,
+        baseColor: Color(0xffd0d2d6),
+        child: Container(
+          width: 180,
+          decoration: BoxDecoration(
+              color: Colors.grey,
+              borderRadius: BorderRadius.all(Radius.circular(10))
           ),
         ),
-      ],
+
+      ),
     );
 }
-Widget _carouselSlider(){
+
+Widget _horizontalSlider(){
+    return Container(
+      margin: const EdgeInsets.only(top: 50.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: Container(
+              height: 300,
+              child: ListView.builder(
+                itemCount: 6,
+                itemBuilder: (context,index)=>buildCard(),
+                scrollDirection: Axis.horizontal,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+}
+
+
+  Widget _carouselSlider(){
   return Shimmer.fromColors(
     highlightColor: Colors.white,
     baseColor: Color(0xffd0d2d6),
@@ -209,28 +191,6 @@ Widget _carouselSlider(){
             SizedBox(
               width: 3,
             ),
-            Container(
-              height: 8,
-              width: 8,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.grey
-              ),
-            ),
-            SizedBox(
-              width: 3,
-            ),
-            Container(
-              height: 8,
-              width: 8,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.grey
-              ),
-            ),
-            SizedBox(
-              width: 3,
-            ),
           ],
         ),
       ],
@@ -238,6 +198,9 @@ Widget _carouselSlider(){
   );
 }
 
+// Widget _textBodyWidget(){
+//
+// }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -293,11 +256,11 @@ Widget _carouselSlider(){
                   _searchField(),
                   _labelPlace(),
                   _carouselSlider(),
-
                   SizedBox(
-                    height: 100,
+                    height: 300,
                       child: _horizontalSlider()
-                  )
+                  ),
+                  // _textBodyWidget(),
                 ],
               ),
             ),

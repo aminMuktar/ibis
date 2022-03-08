@@ -156,7 +156,6 @@ class _SignUpState extends State<SignUp> {
               ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Wait...',style: TextStyle(fontSize: 20, color: Colors.white),),
                   CircularProgressIndicator(
                     color: Colors.white,
                   ),

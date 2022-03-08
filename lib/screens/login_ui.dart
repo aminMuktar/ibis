@@ -161,7 +161,6 @@ class _LoginUIState extends State<LoginUI> {
                     ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Wait...',style: TextStyle(fontSize: 20, color: Colors.white),),
                         CircularProgressIndicator(
                   color: Colors.white,
                 ),
